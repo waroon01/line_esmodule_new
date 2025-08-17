@@ -2,6 +2,7 @@ import { findDocuments } from "../../service/documentService.js";
 import { replyMessageLine } from "./replyMessage.js";
 
 export const handleMessage = async (event) => {
+        console.log(event)
   const messageType = event.message.type;
   switch (messageType) {
     case "text":
