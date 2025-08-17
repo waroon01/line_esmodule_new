@@ -2,26 +2,42 @@ import { findDocuments } from "../../service/documentService.js";
 import { replyMessageLine } from "./replyMessage.js";
 
 export const handleMessage = async (event) => {
-        console.log(event)
   const messageType = event.message.type;
+
   switch (messageType) {
     case "text":
-      if (event.message.text === "สวัสดี") {
+      const text = event.message.text.trim();
+
+      if (text === "สวัสดี") {
         await replyMessageLine(event.replyToken, {
           type: "text",
           text: "สวัสดีนะครับคุณท่าน",
         });
-      } else if (event.message.text.startsWith("doc/")) {
-        const query = event.message.text.substring(4).trim(); // เอาข้อความหลัง "doc/"
-        console.log("query ",query)
-        // สมมติให้ใช้เป็น fullNumber
-        const letters = await findDocuments({ fullNumber: query });
+      } 
+      // ตรวจสอบข้อความที่ขึ้นต้นด้วย doc/
+      else if (text.toLowerCase().startsWith("doc/")) {
+        // ตัด doc/ ออก
+        const queryText = text.substring(4).trim();
+
+        let query = {};
+        // ถ้าเป็นตัวเลข 4 หลัก → ถือเป็น year
+        if (/^\d{4}$/.test(queryText)) {
+          query.year = Number(queryText);
+        } 
+        // ถ้าเป็นอย่างอื่น → ถือเป็น fullNumber
+        else {
+          query.fullNumber = queryText;
+        }
+
+        console.log("query >>>", query);
+
+        const letters = await findDocuments(query);
 
         if (letters.length > 0) {
           const results = letters
             .map(
               (l) =>
-                `เลขที่: ${l.fullNumber}\nเรื่อง: ${l.title}\nผู้ส่ง: ${l.issuedBy}\nผู้รับ: ${l.recipient}`
+                `เลขที่: ${l.fullNumber}\nเรื่อง: ${l.title}\nผู้ส่ง: ${l.issuedBy}\nผู้รับ: ${l.recipient}\nปี: ${l.year}`
             )
             .join("\n\n");
 
@@ -35,7 +51,7 @@ export const handleMessage = async (event) => {
             text: "ไม่พบข้อมูลเอกสารตามที่ค้นหา",
           });
         }
-      }
+      } 
       else {
         await replyMessageLine(event.replyToken, {
           type: "text",
@@ -43,6 +59,7 @@ export const handleMessage = async (event) => {
         });
       }
       break;
+
     case "sticker":
       console.log("sticker");
       break;
