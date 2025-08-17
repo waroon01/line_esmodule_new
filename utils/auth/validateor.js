@@ -7,6 +7,11 @@ export const registerSchema = object({
     password: string().min(6,"password ต้องมากกว่า 6 อักขระ"),
 })
 
+export const loginSchema = object({
+    email: string().email("Email ต้องเป็นรูปแบบ ที่ถูกต้องเท่านั้น").required("กรุณากรอก Email"),
+    password: string().min(6,"password ต้องมากกว่า 6 อักขระ"),
+})
+
 export const validate = (schema)=>async(req,res,next)=>{
     try {
         await schema.validate(req.body,{abortEarly: false});

@@ -29,20 +29,61 @@ export const register = async (req, res, next) => {
     const hashPassword = bcrypt.hashSync(password, 10);
     // 4.Insert into DB
     const newUser = await prisma.user.create({
-        data: {
-            name: name,
-            email: email,
-            password: hashPassword
-        }
-    })
+      data: {
+        name: name,
+        email: email,
+        password: hashPassword,
+      },
+    });
 
-    console.log(newUser);
-    res.json({ message: "Hello controller" });
+    // console.log(newUser);
+    // 5.Response
+    res.json({ message: "Register Success" });
   } catch (error) {
     next(error);
   }
 };
 
-export const login = (req, res) => {
-  res.json({ message: "Hello login controller" });
+export const login = async (req, res, next) => {
+  try {
+    /*
+    1. validate
+    2. check email
+    3. check password
+    4. generate token
+    5. response
+    */
+
+    // 2. check email
+    const { email, password } = req.body;
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
+    if (!user) {
+      createError(400, "Email or Password is invalid!!");
+    }
+
+    //3. check password
+    const checkPassword = bcrypt.compareSync(password, user.password);
+    if (!checkPassword) {
+      createError(400, "password wrong");
+    }
+
+    //4. generate token
+    const payload = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+
+    const token = jwt.sign(payload, "gukkghudev", { expiresIn: "1d" });
+
+    console.log(token);
+    res.json({ message: "Login your Success", payload: payload, token: token });
+  } catch (error) {
+    next(error);
+  }
 };
