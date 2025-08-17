@@ -25,7 +25,7 @@ export const register = async(req,res,next)=>{
 
     res.json({message: "Hello controller"})
     }catch(error){
-        console.log(error)
+        next(error)
     }
 }
 
