@@ -13,6 +13,58 @@ export const handleMessage = async (event) => {
           type: "text",
           text: "สวัสดีนะครับคุณท่าน",
         });
+      } else if (text === "bookid") {
+        const flexMessage = {
+          type: "flex",
+          altText: `ข้อมูลหนังสือ`,
+          contents: {
+            type: "bubble",
+            header: {
+              type: "box",
+              layout: "vertical",
+              contents: [
+                {
+                  type: "text",
+                  text: `Book ID:`,
+                  weight: "bold",
+                  size: "md",
+                },
+              ],
+            },
+            body: {
+              type: "box",
+              layout: "vertical",
+              contents: [
+                {
+                  type: "text",
+                  text: "รายละเอียดเพิ่มเติมสำหรับการจอง",
+                  wrap: true,
+                  size: "sm",
+                },
+              ],
+            },
+            footer: {
+              type: "box",
+              layout: "vertical",
+              contents: [
+                {
+                  type: "button",
+                  style: "primary",
+                  action: {
+                    type: "postback",
+                    label: "Buy",
+                    data: `action=buy&itemid=${bookId}`,
+                    displayText: "Buy",
+                    inputOption: "openKeyboard",
+                    fillInText: "---\nName: \nPhone: \nBirthday: \n---",
+                  },
+                },
+              ],
+            },
+          },
+        };
+        await replyMessageLine(event.replyToken, flexMessage);
+        return;
       } else if (text.toLowerCase().startsWith("doc/")) {
         const queryText = text.substring(4).trim();
 
