@@ -109,17 +109,17 @@ model userLogin {
   enabled   Int    @default(1)
 }
 
-model User {
+model user {
   id        Int       @id @default(autoincrement())
   email     String    @db.VarChar(255)
   password  String    @db.VarChar(255)
   name      String    @db.VarChar(255)
-  role      User_role @default(USER)
+  role      user_role @default(USER)
   createdAt DateTime  @default(now()) @db.DateTime(0)
   updatedAt DateTime  @default(now()) @db.DateTime(0)
 }
 
-enum User_role {
+enum user_role {
   USER
   ADMIN
 }
