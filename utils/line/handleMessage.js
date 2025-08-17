@@ -11,7 +11,7 @@ export const handleMessage = async (event) => {
           text: "สวัสดีนะครับคุณท่าน",
         });
       } else if (event.message.text.startsWith("doc/")) {
-        const query = text.substring(4).trim(); // เอาข้อความหลัง "doc/"
+        const query = event.message.text.substring(4).trim(); // เอาข้อความหลัง "doc/"
         console.log(query)
         // สมมติให้ใช้เป็น fullNumber
         const letters = await findDocuments({ fullNumber: query });
