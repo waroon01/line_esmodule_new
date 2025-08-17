@@ -1,11 +1,18 @@
 import prisma from "../config/prisma_config.js";
 
-export const findDocuments = async ({ fullNumber, year, documentType }) => {
+export const findDocuments = async ({ fullNumber, year, documentType, title }) => {
   const letters = await prisma.officialLetter.findMany({
     where: {
-      fullNumber: fullNumber ? String(fullNumber) : undefined,
-      year: year ? Number(year) : undefined,
-      documentType: documentType ? String(documentType) : undefined,
+      AND: [
+        fullNumber
+          ? { fullNumber: { contains: String(fullNumber), mode: "insensitive" } }
+          : undefined,
+        title
+          ? { title: { contains: String(title), mode: "insensitive" } } // partial match
+          : undefined,
+        year ? { year: Number(year) } : undefined,
+        documentType ? { documentType: String(documentType) } : undefined,
+      ].filter(Boolean),
     },
     orderBy: { createdAt: "desc" },
   });
