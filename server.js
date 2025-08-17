@@ -3,6 +3,7 @@ import cors from "cors"
 import morgan from "morgan"
 import authRoute from "./routes/auth.js"
 import lineRoute from "./routes/line.js"
+import documentRoute from "./routes/doc.js"
 
 
 const app = express()
@@ -22,6 +23,8 @@ app.use('/line',lineRoute)
 
 app.use(express.json())
 app.use('/auth',authRoute)
+app.use('/document', documentRoute)
+
 
 // Error handling
 app.use((err,req,res,next)=>{

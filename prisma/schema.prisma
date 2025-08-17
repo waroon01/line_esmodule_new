@@ -7,6 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model OfficialLetter {
+  id           Int                         @id @default(autoincrement())
+  documentType OfficialLetter_documentType
+  year         Int
+  serialNumber Int
+  fullNumber   String                      @db.VarChar(255)
+  title        String?                     @db.VarChar(500)
+  issuedBy     String                      @db.VarChar(255)
+  recipient    String                      @db.VarChar(255)
+  priority     OfficialLetter_priority?    @default(NORMAL)
+  createdAt    DateTime?                   @default(now()) @db.DateTime(0)
+
+  @@unique([documentType, year, serialNumber], map: "unique_letter_per_year")
+}
+
 model Student {
   student_id          Int       @id @default(autoincrement())
   class_level         String
@@ -99,16 +114,6 @@ model test2 {
   position String @db.VarChar(150)
 }
 
-model userLogin {
-  id        Int    @id @default(autoincrement())
-  email     String @unique @db.VarChar(50)
-  password  String @db.Text
-  firstName String @db.VarChar(80)
-  lastName  String @db.VarChar(80)
-  role      String @default("user") @db.VarChar(20)
-  enabled   Int    @default(1)
-}
-
 model user {
   id        Int       @id @default(autoincrement())
   email     String    @db.VarChar(255)
@@ -119,7 +124,31 @@ model user {
   updatedAt DateTime  @default(now()) @db.DateTime(0)
 }
 
+model userLogin {
+  id        Int    @id @default(autoincrement())
+  email     String @unique @db.VarChar(50)
+  password  String @db.Text
+  firstName String @db.VarChar(80)
+  lastName  String @db.VarChar(80)
+  role      String @default("user") @db.VarChar(20)
+  enabled   Int    @default(1)
+}
+
+enum OfficialLetter_documentType {
+  ORDER
+  OUTLETTER
+  NOTE
+  CERTIFICATE
+}
+
 enum user_role {
   USER
   ADMIN
+}
+
+enum OfficialLetter_priority {
+  NORMAL
+  URGENT
+  VERY_URGENT
+  MOST_URGENT
 }
