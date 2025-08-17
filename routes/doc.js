@@ -61,5 +61,24 @@ router.post('/letter', async (req, res) => {
   }
 });
 
+router.get('/letter/:id', async (req, res) => {
+  try {
+    const { id } = req.params; // ดึงค่า id จาก URL
+
+    const letter = await prisma.officialLetter.findUnique({
+      where: { id: Number(id) }
+    });
+
+    if (!letter) {
+      return res.status(404).json({ message: "ไม่พบหนังสือเลขนี้" });
+    }
+
+    res.json(letter);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "เกิดข้อผิดพลาดในการค้นหาข้อมูล" });
+  }
+});
+
 
 export default router
