@@ -1,17 +1,6 @@
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
-import { PrismaClient } from "./generated/prisma"; // ปรับ path ตามที่ generate
+import { PrismaClient } from "@prisma/client";
 
-// ตั้งค่า adapter สำหรับ MariaDB/MySQL
-const adapter = new PrismaMariaDb({
-  host: "thsv89.hostatom.com",
-  port: 3306,
-  user: "green_test1",
-  password: "?Nq33c7f9",
-  database: "green_test1",
-  connectionLimit: 5,
-});
-
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 
 export const register = async(req,res,next)=>{
