@@ -1,4 +1,4 @@
-import prisma from "../config/prisma_config";
+import prisma from "../config/prisma_config.js";
 
 export const findDocuments = async ({ fullNumber, year, documentType, title }) => {
   const letters = await prisma.officialLetter.findMany({
