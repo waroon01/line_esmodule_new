@@ -1,45 +1,11 @@
 import prisma from "../config/prisma_config.js";
-import { findDocuments } from "../service/documentService.js";
+import { createDocumentInDB, findDocuments } from "../service/documentService.js";
 
 export const createDocument = async (req, res, next) => {
   try {
-    const { documentType, title, issuedBy, recipient, priority } = req.body;
-    const year = parseInt(req.body.year, 10); // ✅ แปลงเป็น number
-
-    // หาเลขล่าสุดของปีและประเภท
-    const latest = await prisma.officialLetter.findFirst({
-      where: { year, documentType },
-      orderBy: { serialNumber: "desc" },
-    });
-
-    const nextSerial = latest ? latest.serialNumber + 1 : 1;
-    const serialStr = String(nextSerial).padStart(3, "0");
-
-    // สร้าง fullNumber ตามเงื่อนไข
-    let fullNumber = "";
-    if (documentType === "OUTLETTER") {
-      fullNumber = `ศธ.04156/${serialStr}`;
-    } else {
-      fullNumber = `ที่ ${documentType}/${serialStr}`;
-    }
-
-    // เพิ่มข้อมูลลง DB
-    const newLetter = await prisma.officialLetter.create({
-      data: {
-        documentType,
-        year, // ✅ ตอนนี้เป็น Int แล้ว
-        serialNumber: nextSerial,
-        fullNumber,
-        title,
-        issuedBy,
-        recipient,
-        priority,
-      },
-    });
-
+    const newLetter = await createDocumentInDB(req.body);
     res.json(newLetter);
   } catch (error) {
-    // console.error(error);
     next(error);
   }
 };

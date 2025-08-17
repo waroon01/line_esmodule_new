@@ -22,3 +22,39 @@ export const findDocuments = async ({ fullNumber, year, documentType, title }) =
   return letters;
 };
 
+export const createDocumentInDB = async ({ documentType, title, issuedBy, recipient, priority, year }) => {
+  const intYear = parseInt(year, 10);
+
+  // หาเลขล่าสุดของปีและประเภท
+  const latest = await prisma.officialLetter.findFirst({
+    where: { year: intYear, documentType },
+    orderBy: { serialNumber: "desc" },
+  });
+
+  const nextSerial = latest ? latest.serialNumber + 1 : 1;
+  const serialStr = String(nextSerial).padStart(3, "0");
+
+  // สร้าง fullNumber
+  let fullNumber = "";
+  if (documentType === "OUTLETTER") {
+    fullNumber = `ศธ.04156/${serialStr}`;
+  } else {
+    fullNumber = `ที่ ${documentType}/${serialStr}`;
+  }
+
+  // บันทึกลง DB
+  const newLetter = await prisma.officialLetter.create({
+    data: {
+      documentType,
+      year: intYear,
+      serialNumber: nextSerial,
+      fullNumber,
+      title,
+      issuedBy,
+      recipient,
+      priority,
+    },
+  });
+
+  return newLetter;
+};

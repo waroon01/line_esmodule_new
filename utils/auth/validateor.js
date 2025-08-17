@@ -33,7 +33,7 @@ export const documentsSchema = object({
   recipient: string()
     .max(60, "ระบุชื่อผู้รับเอกสาร ไม่เกินกว่า 60 อักขระ")
     .required("ระบุผู้รับเอกสารห้ามเว้นว่าง"),
-  priority: string().required("กรุณาเลือกชั้นความเร็วของเอกสารนี้"),
+  priority: string(),
 });
 
 export const validate = (schema) => async (req, res, next) => {
