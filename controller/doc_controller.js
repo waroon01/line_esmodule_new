@@ -65,11 +65,11 @@ export const listDocuments = async (req, res, next) => {
 
 export const searchDocuments = async (req, res, next) => {
   try {
-    const { fullNumber, year, documentType } = req.body;
+    const { fullNumber, year, documentType, title } = req.body;
 
-    if (!fullNumber && !year && !documentType) {
+    if (!fullNumber && !year && !documentType && !title) {
       return res.status(400).json({
-        error: "กรุณาส่ง fullNumber หรือ year หรือ documentType อย่างน้อย 1 ตัว",
+        error: "กรุณาส่ง fullNumber หรือ year หรือ documentType หรือ title อย่างน้อย 1 ตัว",
       });
     }
 
