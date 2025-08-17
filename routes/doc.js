@@ -61,24 +61,35 @@ router.post('/letter', async (req, res) => {
   }
 });
 
-router.get('/letter/:id', async (req, res) => {
+router.post('/letter/search', async (req, res) => {
   try {
-    const { id } = req.params; // ดึงค่า id จาก URL
+    const { fullNumber, year, documentType } = req.body;
 
-    const letter = await prisma.officialLetter.findUnique({
-      where: { id: Number(id) }
-    });
-
-    if (!letter) {
-      return res.status(404).json({ message: "ไม่พบหนังสือเลขนี้" });
+    if (!fullNumber && !year && !documentType) {
+      return res.status(400).json({ error: "กรุณาส่ง fullNumber หรือ year หรือ documentType อย่างน้อย 1 ตัว" });
     }
 
-    res.json(letter);
+    const letters = await prisma.officialLetter.findMany({
+      where: {
+        fullNumber: fullNumber ? String(fullNumber) : undefined,
+        year: year ? Number(year) : undefined,
+        documentType: documentType ? String(documentType) : undefined
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    if (letters.length === 0) {
+      return res.status(404).json({ message: "ไม่พบข้อมูลตามเงื่อนไข" });
+    }
+
+    res.json(letters);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "เกิดข้อผิดพลาดในการค้นหาข้อมูล" });
   }
 });
+
+
 
 
 export default router
