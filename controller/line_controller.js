@@ -5,7 +5,7 @@ import startLineLoading from "../utils/line/lineLoading.js";
 const handleEvent = async (event) => {
   try {
     await startLineLoading(event.source.userId, 10)
-    // console.log(event.type);
+    console.log(event);
     const eventType = event.type;
     switch (eventType) {
       case "message":
