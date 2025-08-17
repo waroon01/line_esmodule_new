@@ -1,5 +1,6 @@
-import { handleMessage } from "../utils/handleMessage.js";
-import startLineLoading from "../utils/lineLoading.js";
+import { handleMessage } from "../utils/line/handleMessage.js";
+import startLineLoading from "../utils/line/lineLoading.js";
+
 
 const handleEvent = async (event) => {
   try {

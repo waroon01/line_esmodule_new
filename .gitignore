@@ -18,3 +18,4 @@ dist/
 build/
 
 ืngrok.exe
+/generated/prisma

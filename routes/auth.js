@@ -1,16 +1,14 @@
-import express from "express"
-const router = express.Router()
+import express from "express";
+const router = express.Router();
+import { login, register } from "../controller/auth_controller.js";
+import { registerSchema, validate } from "../utils/auth/validateor.js";
+
+
 
 //Endpoint url http://localhost:8000/auth/register
-router.post('/register',(req,res)=>{
-    console.log(req.body)
-    res.json({message: "register success"})
-})
+router.post("/register", validate(registerSchema),register);
 
 //Endpoint url http://localhost:8000/auth/login
-router.post('/login',(req,res)=>{
-    res.json({message: "login success"})
-})
+router.post("/login", login);
 
-
-export default router
+export default router;

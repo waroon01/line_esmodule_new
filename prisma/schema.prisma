@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  student_id          Int       @id @default(autoincrement())
+  class_level         String
+  class_room          String
+  student_number      String    @unique
+  code_citizen        String?   @unique(map: "code_citizen") @db.VarChar(20)
+  gender              String
+  prefix_name         String?
+  first_name          String
+  last_name           String
+  birth_date          DateTime?
+  age_years           Int?
+  religion            String?
+  ethnicity           String?
+  guardian_first_name String?
+  guardian_last_name  String?
+  guardian_relation   String?
+  father_first_name   String?
+  father_last_name    String?
+  mother_first_name   String?
+  mother_last_name    String?
+  created_at          DateTime  @default(now())
+  updated_at          DateTime
+  nationality         String?
+  status              String    @default("กำลังศึกษา") @db.VarChar(20)
+  note                String?   @db.Text
+}
+
+model Student_2 {
+  student_id          Int       @id @default(autoincrement())
+  class_level         String
+  class_room          String
+  student_number      String    @unique(map: "Student_student_number_key")
+  code_citizen        String?   @unique(map: "code_citizen") @db.VarChar(20)
+  gender              String
+  prefix_name         String?
+  first_name          String
+  last_name           String
+  birth_date          DateTime?
+  age_years           Int?
+  religion            String?
+  ethnicity           String?
+  guardian_first_name String?
+  guardian_last_name  String?
+  guardian_relation   String?
+  father_first_name   String?
+  father_last_name    String?
+  mother_first_name   String?
+  mother_last_name    String?
+  created_at          DateTime  @default(now())
+  updated_at          DateTime
+  nationality         String?
+  status              String    @default("กำลังศึกษา") @db.VarChar(20)
+  note                String?   @db.Text
+}
+
+model documents {
+  id            Int         @id @default(autoincrement())
+  submission_id Int
+  docname       String      @db.VarChar(255)
+  title         String      @db.VarChar(255)
+  note          String?     @db.Text
+  created_at    DateTime?   @default(now()) @db.Timestamp(0)
+  submissions   submissions @relation(fields: [submission_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "documents_ibfk_1")
+
+  @@index([submission_id], map: "submission_id")
+}
+
+model submissions {
+  id           Int         @id @default(autoincrement())
+  teacher_name String      @db.VarChar(100)
+  date_accept  DateTime    @db.Date
+  time_accept  DateTime    @db.Time(0)
+  receiver     String?     @db.VarChar(100)
+  created_at   DateTime?   @default(now()) @db.Timestamp(0)
+  documents    documents[]
+}
+
+model test1 {
+  id                Int      @id @default(autoincrement())
+  user_id           String   @unique(map: "user_id") @db.VarChar(50)
+  displayname       String   @db.VarChar(100)
+  profile_image_url String?  @db.Text
+  followed_at       DateTime @default(now()) @db.Timestamp(0)
+}
+
+model test2 {
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar(150)
+  position String @db.VarChar(150)
+}
+
+model userLogin {
+  id        Int    @id @default(autoincrement())
+  email     String @unique @db.VarChar(50)
+  password  String @db.Text
+  firstName String @db.VarChar(80)
+  lastName  String @db.VarChar(80)
+  role      String @default("user") @db.VarChar(20)
+  enabled   Int    @default(1)
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @db.VarChar(255)
+  password  String    @db.VarChar(255)
+  name      String    @db.VarChar(255)
+  role      User_role @default(USER)
+  createdAt DateTime  @default(now()) @db.DateTime(0)
+  updatedAt DateTime  @default(now()) @db.DateTime(0)
+}
+
+enum User_role {
+  USER
+  ADMIN
+}

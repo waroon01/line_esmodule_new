@@ -1,4 +1,4 @@
-import { lineclient } from "../config/line_config.js";
+import { lineclient } from "../../config/line_config.js";
 
 export const replyMessageLine = async (replyToken, message) => {
   try {

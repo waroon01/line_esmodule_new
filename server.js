@@ -23,7 +23,11 @@ app.use('/line',lineRoute)
 app.use(express.json())
 app.use('/auth',authRoute)
 
-
+// Error handling
+app.use((err,req,res,next)=>{
+    console.log(err)
+    res.status(err.code || 500).json({message: err.message || "Someting Wrong!!!"})
+})
 
 const PORT = 8000
 app.listen(PORT,()=>console.log(`Server is running on port ${PORT}`))
