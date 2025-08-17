@@ -1,0 +1,29 @@
+import express from "express"
+import cors from "cors"
+import morgan from "morgan"
+import authRoute from "./routes/auth.js"
+import lineRoute from "./routes/line.js"
+
+
+const app = express()
+
+// middlewares
+app.use(cors()) //Allows corss origins
+app.use(morgan('dev'))
+
+// Routing
+// GET, POST, PUT, PATCH, DELETE
+// http://localhost:8000
+app.get('/',(req,res)=>{
+    res.json({message: "success get server"})
+})
+
+app.use('/line',lineRoute)
+
+app.use(express.json())
+app.use('/auth',authRoute)
+
+
+
+const PORT = 8000
+app.listen(PORT,()=>console.log(`Server is running on port ${PORT}`))
