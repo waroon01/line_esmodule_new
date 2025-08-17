@@ -32,8 +32,13 @@ router.post('/letter', async (req, res) => {
     const nextSerial = latest ? latest.serialNumber + 1 : 1;
     const serialStr = String(nextSerial).padStart(3, "0");
 
-    // สร้าง fullNumber
-    const fullNumber = `ที่ ${documentType}/${serialStr}`;
+    // สร้าง fullNumber ตามเงื่อนไข
+    let fullNumber = "";
+    if (documentType === "OUTLETTER") {
+      fullNumber = `ศธ.04156/${serialStr}`;
+    } else {
+      fullNumber = `ที่ ${documentType}/${serialStr}`;
+    }
 
     // เพิ่มข้อมูลลง DB
     const newLetter = await prisma.officialLetter.create({
@@ -55,5 +60,6 @@ router.post('/letter', async (req, res) => {
     res.status(500).json({ error: "เกิดข้อผิดพลาดในการเพิ่มข้อมูล" });
   }
 });
+
 
 export default router
