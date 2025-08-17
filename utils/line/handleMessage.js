@@ -53,10 +53,10 @@ export const handleMessage = async (event) => {
                   action: {
                     type: "postback",
                     label: "Buy",
-                    data: `action=buy&itemid=${bookId}`,
+                    data: `action=buy&itemid=123`,
                     displayText: "Buy",
                     inputOption: "openKeyboard",
-                    fillInText: "---\nName: \nPhone: \nBirthday: \n---",
+                    fillInText: "---\ntitle: \nyear: \nfullNumber: \n---",
                   },
                 },
               ],
