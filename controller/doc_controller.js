@@ -73,7 +73,7 @@ export const searchDocuments = async (req, res, next) => {
       });
     }
 
-    const letters = await findDocuments({ fullNumber, year, documentType });
+    const letters = await findDocuments({ fullNumber, year, documentType, title });
 
     if (letters.length === 0) {
       return res.status(404).json({ message: "ไม่พบข้อมูลตามเงื่อนไข" });
