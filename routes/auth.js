@@ -6,7 +6,7 @@ import { registerSchema, validate } from "../utils/auth/validateor.js";
 
 
 //Endpoint url http://localhost:8000/auth/register
-router.post("/register", register);
+router.post("/register", validate(registerSchema), register);
 
 //Endpoint url http://localhost:8000/auth/login
 router.post("/login", login);

@@ -1,7 +1,10 @@
-import prisma from "../config/prisma_config";
+import prisma from "../config/prisma_config.js";
+import createError from "../utils/auth/createError.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-export const register = async(req,res,next)=>{
-    try{
+export const register = async (req, res, next) => {
+  try {
     /*
         1.check body
         2.check Email in DB
@@ -9,23 +12,37 @@ export const register = async(req,res,next)=>{
         4.Insert into DB
         5.Response 
     */
-   const { email, name, password } = req.body
-   console.log(email,name,password)   
-       const newUser = await prisma.user.create({
-      data: {
-        email,
-        name,
-        password,
-        role: "USER", // default
+
+    // 1.check body
+    const { email, name, password } = req.body;
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
       },
     });
 
-    res.json({message: "Hello controller"})
-    }catch(error){
-        next(error)
+    // 2.check Email in DB
+    if (user) {
+      createError(400, "Email aleady exist!!!");
     }
-}
+    // 3.Encrypt Password ->bcryptJS
+    const hashPassword = bcrypt.hashSync(password, 10);
+    // 4.Insert into DB
+    const newUser = await prisma.user.create({
+        data: {
+            name: name,
+            email: email,
+            password: hashPassword
+        }
+    })
 
-export const login = (req,res)=>{
-    res.json({message: "Hello login controller"})
-}
+    console.log(newUser);
+    res.json({ message: "Hello controller" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const login = (req, res) => {
+  res.json({ message: "Hello login controller" });
+};
