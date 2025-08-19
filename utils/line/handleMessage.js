@@ -16,71 +16,6 @@ export const handleMessage = async (event) => {
         });
         return;
       }
-
-      // ตัวอย่าง Flex bookid
-      if (text.toLowerCase() === "bookid") {
-        const flexMessage = {
-          type: "flex",
-          altText: `ข้อมูลหนังสือ`,
-          contents: {
-            type: "bubble",
-            header: { type: "box", layout: "vertical", contents: [{ type: "text", text: `Book ID:`, weight: "bold", size: "md" }] },
-            body: { type: "box", layout: "vertical", contents: [{ type: "text", text: "รายละเอียดเพิ่มเติมสำหรับการจอง", wrap: true, size: "sm" }] },
-            footer: {
-              type: "box",
-              layout: "vertical",
-              contents: [
-                {
-                  type: "button",
-                  style: "primary",
-                  action: {
-                    type: "postback",
-                    label: "createDoc",
-                    data: `action=buy&itemid=123`,
-                    displayText: "create",
-                    inputOption: "openKeyboard",
-                    fillInText:
-                      "createdoc={\ntitle: \nyear: \ndocumentType: OUTLETTER \nissuedBy: \nrecipient: \n}",
-                  },
-                },
-              ],
-            },
-          },
-        };
-        await replyMessageLine(event.replyToken, flexMessage);
-        return;
-      }
-
-      // ดักข้อความ fillInText createdoc
-      if (text.startsWith("createdoc=")) {
-        const data = parseFillInText(text);
-        if (!data) {
-          await replyMessageLine(event.replyToken, {
-            type: "text",
-            text: "ไม่สามารถอ่านข้อมูลเอกสารได้",
-          });
-          return;
-        }
-
-        try {
-          // เรียก Service สร้างเอกสาร
-          const newDoc = await createDocumentInDB(data);
-
-          await replyMessageLine(event.replyToken, {
-            type: "text",
-            text: `สร้างเอกสารเรียบร้อยแล้ว\nเลขที่: ${newDoc.fullNumber}\nTitle: ${newDoc.title}\nปี: ${newDoc.year}`,
-          });
-        } catch (err) {
-          console.error(err);
-          await replyMessageLine(event.replyToken, {
-            type: "text",
-            text: "เกิดข้อผิดพลาดในการสร้างเอกสาร",
-          });
-        }
-
-        return;
-      }
-
       // ค้นหา doc/
       if (text.toLowerCase().startsWith("doc/")) {
         const queryText = text.substring(4).trim();
@@ -131,17 +66,4 @@ export const handleMessage = async (event) => {
   }
 };
 
-// ฟังก์ชัน parse fillInText
-function parseFillInText(text) {
-  const match = text.match(/\{([\s\S]*)\}/);
-  if (!match) return null;
-  const content = match[1].trim();
-  const obj = {};
-  content.split("\n").forEach((line) => {
-    const [key, ...rest] = line.split(":");
-    if (key) {
-      obj[key.trim()] = rest.join(":").trim();
-    }
-  });
-  return obj;
-}
+
