@@ -16,6 +16,14 @@ export const handleMessage = async (event) => {
         });
         return;
       }
+
+      if(text.toLowerCase() === "createdoc" ){
+        await replyMessageLine(event.replyToken, {
+          type: "text",
+          text: "https://liff.line.me/1657704109-dZayMMoA คลิกเพื่อขอเลขที่ออกที่นี่",
+        });
+        return
+      }
       // ค้นหา doc/
       if (text.toLowerCase().startsWith("doc/")) {
         const queryText = text.substring(4).trim();
