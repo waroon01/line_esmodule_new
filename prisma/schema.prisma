@@ -13,9 +13,10 @@ model OfficialLetter {
   year         Int
   serialNumber Int
   fullNumber   String                      @db.VarChar(255)
-  title        String?                     @db.VarChar(500)
+  title        String                      @db.VarChar(255)
   issuedBy     String                      @db.VarChar(255)
   recipient    String                      @db.VarChar(255)
+  note         String?                     @db.VarChar(500)
   priority     OfficialLetter_priority?    @default(NORMAL)
   createdAt    DateTime?                   @default(now()) @db.DateTime(0)
 

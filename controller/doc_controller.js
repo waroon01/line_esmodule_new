@@ -3,12 +3,21 @@ import { createDocumentInDB, findDocuments } from "../service/documentService.js
 
 export const createDocument = async (req, res, next) => {
   try {
-    const newLetter = await createDocumentInDB(req.body);
+    // กำหนดค่าเริ่มต้นของแต่ละประเภท
+    const startSerialMap = {
+      OUTLETTER: 10,
+      ORDER: 100,
+      NOTE: 50,
+      CERTIFICATE: 1
+    };
+
+    const newLetter = await createDocumentInDB({ ...req.body, startSerialMap });
     res.json(newLetter);
   } catch (error) {
     next(error);
   }
 };
+
 
 
 export const listDocuments = async (req, res, next) => {
