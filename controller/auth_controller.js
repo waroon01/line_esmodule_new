@@ -79,7 +79,7 @@ export const login = async (req, res, next) => {
       role: user.role,
     };
 
-    const token = jwt.sign(payload, "gukkghudev", { expiresIn: "1d" });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" });
 
     console.log(token);
     res.json({ message: "Login your Success", payload: payload, token: token });
