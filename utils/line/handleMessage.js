@@ -20,14 +20,56 @@ export const handleMessage = async (event) => {
         return;
       }
 
-      if (text.toLowerCase().startsWith("std/")) {
-        const queryText = text.substring(4).trim();
-        let query = {};
-        query.student_number = queryText;
-        query.first_name = queryText;
-        const students = await findStudents(query)
-        console.log("okk มาและ ",students)
+    if (text.toLowerCase().startsWith("std/")) {
+      const queryText = text.substring(4).trim();
+
+      // เตรียม query สำหรับ service
+      const students = await findStudents({ 
+        student_number: queryText, 
+        first_name: queryText 
+      });
+
+      if (students.length === 0) {
+        await replyMessageLine(event.replyToken, {
+          type: "text",
+          text: "ไม่พบข้อมูลนักเรียนตามที่ค้นหา"
+        });
+        return;
       }
+
+      // เตรียม Flex message แสดงผลลัพธ์ ไม่เกิน 10 record
+      const bubbleStudents = students.slice(0, 10);
+      const flexMessage = {
+        type: "flex",
+        altText: "ผลการค้นหานักเรียน",
+        contents: {
+          type: "carousel",
+          contents: bubbleStudents.map((s) => ({
+            type: "bubble",
+            header: {
+              type: "box",
+              layout: "vertical",
+              contents: [
+                { type: "text", text: `รหัสนักเรียน: ${s.student_number}`, weight: "bold", size: "md" },
+                { type: "text", text: `ชื่อ: ${s.prefix_name || ""} ${s.first_name} ${s.last_name}`, size: "sm" }
+              ]
+            },
+            body: {
+              type: "box",
+              layout: "vertical",
+              contents: [
+                { type: "text", text: `ชั้น: ${s.class_level} ห้อง: ${s.class_room}`, size: "sm" },
+                { type: "text", text: `เพศ: ${s.gender}`, size: "sm" }
+              ]
+            }
+          }))
+        }
+      };
+
+      await replyMessageLine(event.replyToken, flexMessage);
+      return;
+    }
+
 
       if(text.toLowerCase() === "createdoc" ){
         await replyMessageLine(event.replyToken, {
