@@ -12,3 +12,8 @@ export const lineConfig = {
 export const lineclient = new line.messagingApi.MessagingApiClient({
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
 });
+
+// 👇 client สำหรับอัพโหลดไฟล์ (เช่น richmenu image)
+export const lineBlobClient = new line.messagingApi.MessagingApiBlobClient({
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+});
