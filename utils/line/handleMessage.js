@@ -14,7 +14,7 @@ export const handleMessage = async (event) => {
       if (text === "สวัสดี") {
         await replyMessageLine(event.replyToken, {
           type: "text",
-          text: "สวัสดีนะครับคุณท่าน",
+          text: "สวัสดีนะครับคุณท่านครับ",
         });
         return;
       }
