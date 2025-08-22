@@ -5,48 +5,35 @@ import { lineBlobClient, lineclient } from "../config/line_config.js";
 export const createRichmenu = async (req, res) => {
   try {
     const richMenu = {
-      size: {
-        width: 2500,
-        height: 1686,
+  "size": {
+    "width": 2500,
+    "height": 1686
+  },
+  "selected": true,
+  "name": "Rich Menu 1",
+  "chatBarText": "เมนู",
+  "areas": [
+    {
+      "bounds": {
+        "x": 0,
+        "y": 843,
+        "width": 835,
+        "height": 843
       },
-      selected: false,
-      name: "richmenu-a",
-      chatBarText: "Tap to open",
-      areas: [
-        {
-          bounds: {
-            x: 0,
-            y: 0,
-            width: 1250,
-            height: 1686,
-          },
-          action: {
-            type: "uri",
-            uri: "https://developers.line.biz/",
-          },
-        },
-        {
-          bounds: {
-            x: 1251,
-            y: 0,
-            width: 1250,
-            height: 1686,
-          },
-          action: {
-            type: "richmenuswitch",
-            richMenuAliasId: "richmenu-alias-b",
-            data: "richmenu-changed-to-b",
-          },
-        },
-      ],
-    };
+      "action": {
+        "type": "message",
+        "text": "createdoc"
+      }
+    }
+  ]
+};
 
     // สร้าง rich menu
     const { richMenuId } = await lineclient.createRichMenu(richMenu);
     console.log("✅ Created richmenu:", richMenuId);
 
     // อัพโหลดรูป
-    const imagePath = path.resolve("./public/richmenu-a.png");
+    const imagePath = path.resolve("./public/test1.png");
     const bufferA = readFileSync(imagePath);
 
     await lineBlobClient.setRichMenuImage(

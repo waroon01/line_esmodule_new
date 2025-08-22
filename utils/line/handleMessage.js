@@ -1,6 +1,7 @@
 import { findDocuments, createDocumentInDB } from "../../service/documentService.js";
 import { replyMessageLine } from "./replyMessage.js";
 import startLineLoading from "./lineLoading.js"
+import { findStudents } from "../../service/studentService.js";
 
 export const handleMessage = async (event) => {
   await startLineLoading(event.source.userId, 5)
@@ -17,6 +18,15 @@ export const handleMessage = async (event) => {
           text: "สวัสดีนะครับคุณท่านครับ",
         });
         return;
+      }
+
+      if (text.toLowerCase().startsWith("std/")) {
+        const queryText = text.substring(4).trim();
+        let query = {};
+        query.student_number = queryText;
+        query.first_name = queryText;
+        const students = await findStudents(query)
+        console.log("okk มาและ ",students)
       }
 
       if(text.toLowerCase() === "createdoc" ){

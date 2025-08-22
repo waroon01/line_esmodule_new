@@ -6,6 +6,7 @@ import morgan from "morgan"
 import authRoute from "./routes/auth.js"
 import lineRoute from "./routes/line.js"
 import documentRoute from "./routes/doc.js"
+import studentRoute from "./routes/students.js"
 
 
 const app = express()
@@ -26,6 +27,7 @@ app.use('/line',lineRoute)
 app.use(express.json())
 app.use('/auth',authRoute)
 app.use('/document', documentRoute)
+app.use('/student',studentRoute)
 
 
 // Error handling
