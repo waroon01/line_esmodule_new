@@ -85,4 +85,32 @@ router.post("/createrichmenu", async (req, res) => {
   }
 });
 
+
+/**
+ * DELETE /line/deleterichmenus
+ * ลบ Rich Menu ทั้งหมด
+ */
+router.delete("/deleterichmenus", async (req, res) => {
+  try {
+    const richMenusResponse = await lineclient.getRichMenuList();
+    const richMenus = richMenusResponse.richmenus || []; // ✅ ต้องเข้าถึง property 'richmenus'
+    const deleted = [];
+
+    for (const menu of richMenus) {
+      await lineclient.deleteRichMenu(menu.richMenuId);
+      deleted.push(menu.richMenuId);
+      console.log(`✅ Deleted richmenu: ${menu.richMenuId}`);
+    }
+
+    res.json({
+      message: "Deleted all richmenus successfully",
+      deleted,
+    });
+  } catch (error) {
+    console.error("❌ Error deleting richmenus:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 export default router;
