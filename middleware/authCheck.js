@@ -11,7 +11,7 @@ const authCheck = async (req, res, next) => {
 
     const token = headersAuth.split(" ")[1];
     if (!token) {
-      createError(400, "your token not found");
+      createError(400, "your token not foundja");
     }
 
     const decode = jwt.verify(token, process.env.JWT_SECRET);

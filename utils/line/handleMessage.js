@@ -1,7 +1,9 @@
 import { findDocuments, createDocumentInDB } from "../../service/documentService.js";
 import { replyMessageLine } from "./replyMessage.js";
+import startLineLoading from "./lineLoading.js"
 
 export const handleMessage = async (event) => {
+  await startLineLoading(event.source.userId, 5)
   const messageType = event.message.type;
 
   switch (messageType) {
