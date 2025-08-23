@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import createError from "../utils/auth/createError.js";
 import prisma from "../config/prisma_config.js";
 
-const authCheck = async (req, res, next) => {
+export const authCheck = async (req, res, next) => {
   try {
     const headersAuth = req.headers.authorization;
     if (!headersAuth) {
@@ -31,4 +31,20 @@ const authCheck = async (req, res, next) => {
   }
 };
 
-export default authCheck;
+export const adminCheck = async (req,res,next)=>{
+  try {
+    const {email} = req.user
+    const adminUser = await prisma.user.findFirst({
+      where: {
+        email: email
+      }
+    })
+    if(!adminUser || adminUser.role !== 'ADMIN'){
+      createError(403, "Access Denied Admin Only")
+    }
+    // console.log('admin check ',adminUser)
+    next()
+  } catch (error) {
+    next(error);
+  }
+}

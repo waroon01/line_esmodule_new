@@ -39,7 +39,6 @@ export const listDocuments = async (req, res, next) => {
 };
 
 export const searchDocuments = async (req, res, next) => {
-  console.log("user จ้า ",req.user) 
   try {
     const { fullNumber, year, documentType, title } = req.body;
 

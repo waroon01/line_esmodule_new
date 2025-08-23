@@ -87,3 +87,43 @@ export const login = async (req, res, next) => {
     next(error);
   }
 };
+
+export const currentUser = async(req,res)=>{
+  try {
+    console.log("test")
+    const user = await prisma.user.findFirst({
+      where: {
+        email: req.user.email
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true
+      }
+    })
+    res.json({user})
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const currentAdmin = async(req,res)=>{
+  try {
+    console.log("test")
+    const user = await prisma.user.findFirst({
+      where: {
+        email: req.user.email
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true
+      }
+    })
+    res.json({user})
+  } catch (error) {
+    next(error)
+  }
+}
