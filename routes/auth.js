@@ -3,6 +3,7 @@ const router = express.Router();
 import {
   currentAdmin,
   currentUser,
+  getListUser,
   login,
   register,
 } from "../controller/auth_controller.js";
@@ -18,7 +19,11 @@ router.post("/register", validate(registerSchema), register);
 
 //Endpoint url http://localhost:8000/auth/login
 router.post("/login", validate(loginSchema), login);
+
 router.post("/current-user", authCheck, currentUser);
+
 router.post("/current-admin", authCheck, adminCheck, currentAdmin);
+
+router.post("/listuser",authCheck, adminCheck,getListUser)
 
 export default router;

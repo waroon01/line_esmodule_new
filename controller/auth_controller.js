@@ -127,3 +127,20 @@ export const currentAdmin = async(req,res)=>{
     next(error)
   }
 }
+
+export const getListUser = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+
+    if (users.length > 0) {
+      return res.status(200).json(users);
+    }
+
+    // ถ้าไม่พบ user
+    return res.status(404).json({ message: "No users found" });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
