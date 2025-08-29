@@ -1,6 +1,6 @@
 import express from "express";
 import prisma from "../config/prisma_config.js";
-import { findStudents } from "../service/studentService.js";
+import { findStudents, getStudent } from "../service/studentService.js";
 import { authCheck } from "../middleware/authCheck.js";
 const router = express.Router();
 
@@ -34,4 +34,16 @@ router.post("/liststudent",authCheck, async (req, res) => {
   }
 });
 
+router.get("/getstudent/:id",async (req,res)=>{
+  try {
+    const student_number = req.params.id
+    const student = await getStudent(student_number)
+    res.json({student: student})
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+
 export default router;
+

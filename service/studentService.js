@@ -26,3 +26,17 @@ export const findStudents = async (filters) => {
 
   return students;
 };
+
+export const getStudent = async (student_number)=>{
+  try {
+    const student = await prisma.student.findFirst({
+      where: {
+        student_number: student_number
+      }
+    })
+    return student
+  } catch (error) {
+    console.log(error)
+  }
+
+}
