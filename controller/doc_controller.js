@@ -5,7 +5,7 @@ export const createDocument = async (req, res, next) => {
   try {
     // กำหนดค่าเริ่มต้นของแต่ละประเภท
     const startSerialMap = {
-      OUTLETTER: 10,
+      OUTLETTER: 147,
       ORDER: 100,
       NOTE: 50,
       CERTIFICATE: 1
