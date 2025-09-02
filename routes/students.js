@@ -34,15 +34,22 @@ router.post("/liststudent",authCheck, async (req, res) => {
   }
 });
 
-router.get("/getstudent/:id",async (req,res)=>{
+router.get("/getstudent/:id", async (req, res) => {
   try {
-    const student_number = req.params.id
-    const student = await getStudent(student_number)
-    res.json({student: student})
+    const student_number = req.params.id;
+    const student = await getStudent(student_number);
+
+    if (!student) {
+      return res.status(404).json({ message: "ไม่พบข้อมูลนักเรียน" });
+    }
+
+    res.json({ student });
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์" });
   }
-})
+});
+
 
 
 export default router;
