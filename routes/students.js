@@ -19,7 +19,7 @@ router.post("/find", async (req, res) => {
   }
 });
 
-router.post("/liststudent",authCheck, async (req, res) => {
+router.post("/liststudent", authCheck, async (req, res) => {
   try {
     const students = await prisma.student.findMany({
       orderBy: { student_number: "desc" },
@@ -50,7 +50,33 @@ router.get("/getstudent/:id", async (req, res) => {
   }
 });
 
+router.post("/updatestudent/:id", authCheck, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    console.log("id  >>> ",id)
+    // เช็คก่อนว่ามี Student นี้หรือไม่
+    const existingStudent = await prisma.student.findUnique({
+      where: { student_id: parseInt(id) },
+    });
+    if (!existingStudent) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Student not found" });
+    }
 
+    // อัปเดตข้อมูล
+    const updatedStudent = await prisma.student.update({
+      where: { student_id: parseInt(id) },
+      data: {
+        ...data,
+      },
+    });
+
+    return res.status(200).json({ success: true, data: updatedStudent });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 export default router;
-
