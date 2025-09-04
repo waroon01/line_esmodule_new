@@ -135,6 +135,16 @@ model userLogin {
   enabled   Int    @default(1)
 }
 
+model events_thaigham {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  description String?   @db.Text
+  location    String?   @db.VarChar(255)
+  event_date  DateTime  @db.Date
+  created_at  DateTime? @default(now()) @db.Timestamp(0)
+  updated_at  DateTime? @default(now()) @db.Timestamp(0)
+}
+
 enum OfficialLetter_documentType {
   ORDER
   OUTLETTER

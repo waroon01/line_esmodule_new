@@ -27,7 +27,7 @@ export const documentsSchema = object({
     .min(2568, "ปีต้องตั้งแต่ 2568 ขึ้นไป")
     .required("Year is required"),
   title: string()
-    .min(5, "เรื่องที่ส่งต้องมีอย่างน้อย 5 อักขระ")   // ✅ บังคับขั้นต่ำ 5 ตัว
+    .min(5, "เรื่องที่ส่งต้องมีอย่างน้อย 5 อักขระ") // ✅ บังคับขั้นต่ำ 5 ตัว
     .max(500, "เรื่องที่ส่งต้องไม่เกินกว่า 500 อักขระ"),
   issuedBy: string()
     .max(60, "ระบุชื่อผู้ออกเลขที่ ไม่เกินกว่า 60 อักขระ")
@@ -49,3 +49,20 @@ export const validate = (schema) => async (req, res, next) => {
     next(err);
   }
 };
+
+export const eventSchema = object({
+  title: string()
+    .min(3, "ชื่อกิจกรรมต้องมีอย่างน้อย 3 ตัวอักษร")
+    .max(255, "ชื่อกิจกรรมต้องไม่เกิน 255 ตัวอักษร")
+    .required("กรุณากรอกชื่อกิจกรรม"),
+  description: string()
+    .max(1000, "คำอธิบายต้องไม่เกิน 1000 ตัวอักษร")
+    .nullable(),
+  location: string().max(255, "สถานที่ต้องไม่เกิน 255 ตัวอักษร").nullable(),
+  event_date: string()
+    .required("กรุณาระบุวันที่กิจกรรม")
+    .matches(/^\d{4}-\d{2}-\d{2}$/, "วันที่ต้องอยู่ในรูปแบบ YYYY-MM-DD")
+    .test("is-valid-date", "วันที่ไม่ถูกต้อง", (value) => {
+      return !isNaN(new Date(value).getTime());
+    }),
+});
