@@ -21,4 +21,16 @@ route.post("/create", validate(eventSchema),async (req, res, next) => {
   }
 });
 
+// ดึงข้อมูล event ทั้งหมด
+route.get("/events", async (req, res, next) => {
+  try {
+    const events = await prisma.events_thaigham.findMany({
+      orderBy: { event_date: "asc" } // เรียงตามวันที่จากน้อยไปมาก
+    });
+    res.status(200).json({ success: true, data: events });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default route;
