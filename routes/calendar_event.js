@@ -1,9 +1,10 @@
 import express from "express";
 import prisma from "../config/prisma_config.js";
 import { eventSchema, validate } from "../utils/auth/validateor.js";
+import createError from "../utils/auth/createError.js";
 const route = express.Router();
 
-route.post("/create", validate(eventSchema),async (req, res, next) => {
+route.post("/create", validate(eventSchema), async (req, res, next) => {
   try {
     const { title, description, location, event_date } = req.body;
     console.log(title, event_date);
@@ -15,7 +16,7 @@ route.post("/create", validate(eventSchema),async (req, res, next) => {
         event_date: new Date(event_date),
       },
     });
-    res.status(200).json({success: true, data: response})
+    res.status(200).json({ success: true, data: response });
   } catch (error) {
     next(error);
   }
@@ -25,7 +26,7 @@ route.post("/create", validate(eventSchema),async (req, res, next) => {
 route.get("/events", async (req, res, next) => {
   try {
     const events = await prisma.events_thaigham.findMany({
-      orderBy: { event_date: "asc" } // เรียงตามวันที่จากน้อยไปมาก
+      orderBy: { event_date: "asc" }, // เรียงตามวันที่จากน้อยไปมาก
     });
     res.status(200).json({ success: true, data: events });
   } catch (error) {
@@ -37,9 +38,9 @@ route.get("/events", async (req, res, next) => {
 route.put("/update/:id", async (req, res, next) => {
   try {
     const { id } = req.params; // รับ id จาก params
-    console.log(id)
+    console.log(id);
     const { title, description, location, event_date } = req.body; // รับข้อมูลใหม่จาก body
-    console.log(title,description,location,event_date)
+    console.log(title, description, location, event_date);
 
     const updatedEvent = await prisma.events_thaigham.update({
       where: { id: Number(id) }, // Prisma ต้องแปลงเป็น Number ถ้า id เป็น int
@@ -62,6 +63,28 @@ route.put("/update/:id", async (req, res, next) => {
   }
 });
 
+route.delete("/remove/:id", async (req, res) => {
+  try {
+    const { id } = req.params 
+    if(!id){
+      createError(400, "id event is invalid!!");
+    }
+    
+    const event = await prisma.events_thaigham.findUnique({
+       where: { id: Number(id) }, 
+    })
 
+    if(!event){ 
+      createError(400, "event is not found");
+    }
+
+    await prisma.events_thaigham.delete({
+      where: { id: Number(id) }
+    })
+    res.status(200).json({success: true, message: "event deleted success"})
+  } catch (error) {
+    next(error)
+  }
+});
 
 export default route;
