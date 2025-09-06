@@ -122,7 +122,7 @@ export const currentAdmin = async(req,res)=>{
         role: true
       }
     })
-    res.json({user})
+    res.json({user}).status(200)
   } catch (error) {
     next(error)
   }
