@@ -60,6 +60,7 @@ export const authCheck = async (req, res, next) => {
     console.error("Auth Error:", error.message);
 
     if (error.name === "TokenExpiredError") {
+      console.log("jwt-expire")
       return res.status(401).json({ message: "jwt expired" });
     }
 
