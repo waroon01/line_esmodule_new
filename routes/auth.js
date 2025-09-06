@@ -24,6 +24,6 @@ router.post("/current-user", authCheck, currentUser);
 
 router.post("/current-admin", authCheck, adminCheck, currentAdmin);
 
-router.post("/listuser",authCheck, adminCheck,getListUser)
+router.post("/listuser",authCheck, getListUser)
 
 export default router;
