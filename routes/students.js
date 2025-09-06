@@ -29,7 +29,7 @@ router.post("/liststudent", authCheck, async (req, res) => {
     }
     res.json(students);
   } catch (error) {
-    console.error(err);
+    console.error(error);
     res.status(500).send("Server Error");
   }
 });
