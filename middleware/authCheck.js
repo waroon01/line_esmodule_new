@@ -90,7 +90,6 @@ export const authCheck = async (req, res, next) => {
 //   }
 // }
 
-import prisma from "../config/prisma_config.js";
 
 export const adminCheck = async (req, res, next) => {
   try {
