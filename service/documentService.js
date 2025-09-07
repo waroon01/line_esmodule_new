@@ -1,15 +1,22 @@
 import prisma from "../config/prisma_config.js";
 
-export const findDocuments = async ({ fullNumber, year, documentType, title }) => {
+export const findDocuments = async ({
+  fullNumber,
+  year,
+  documentType,
+  title,
+}) => {
   const letters = await prisma.officialLetter.findMany({
     where: {
       AND: [
         year ? { year: Number(year) } : undefined,
         documentType ? { documentType: String(documentType) } : undefined,
-        (fullNumber || title)
+        fullNumber || title
           ? {
               OR: [
-                fullNumber ? { fullNumber: { contains: String(fullNumber) } } : undefined,
+                fullNumber
+                  ? { fullNumber: { contains: String(fullNumber) } }
+                  : undefined,
                 title ? { title: { contains: String(title) } } : undefined,
               ].filter(Boolean),
             }
@@ -22,7 +29,16 @@ export const findDocuments = async ({ fullNumber, year, documentType, title }) =
   return letters;
 };
 
-export const createDocumentInDB = async ({ documentType, title, issuedBy, recipient, priority, year, note, startSerialMap }) => {
+export const createDocumentInDB = async ({
+  documentType,
+  title,
+  issuedBy,
+  recipient,
+  priority,
+  year,
+  note,
+  startSerialMap,
+}) => {
   const intYear = parseInt(year, 10);
   if (!documentType || !title || !issuedBy || !recipient || !intYear) {
     throw new Error("ข้อมูลไม่ครบถ้วน");
@@ -36,13 +52,16 @@ export const createDocumentInDB = async ({ documentType, title, issuedBy, recipi
 
   // กำหนดค่าเริ่มต้นจาก mapping หรือ default = 1
   const defaultStart = startSerialMap?.[documentType] || 1;
-  const nextSerial = latest?.serialNumber ? latest.serialNumber + 1 : defaultStart;
+  const nextSerial = latest?.serialNumber
+    ? latest.serialNumber + 1
+    : defaultStart;
   const serialStr = nextSerial.toString().padStart(3, "0");
 
   // สร้าง fullNumber
-  const fullNumber = documentType === "OUTLETTER"
-    ? `ศธ.04156/${serialStr}`
-    : `ที่ ${serialStr}/${year}`;
+  const fullNumber =
+    documentType === "OUTLETTER"
+      ? `ศธ.04156.005/${serialStr}`
+      : `ที่ ${serialStr}/${year}`;
 
   // บันทึกลง DB
   const newLetter = await prisma.officialLetter.create({
@@ -62,7 +81,6 @@ export const createDocumentInDB = async ({ documentType, title, issuedBy, recipi
   return newLetter;
 };
 
-
 // ✅ ฟังก์ชันดึงเลขล่าสุดของเอกสารแต่ละประเภท
 export const getStatistics = async (year) => {
   try {
@@ -74,7 +92,6 @@ export const getStatistics = async (year) => {
       where: intYear ? { year: intYear } : undefined,
       _max: { serialNumber: true },
     });
-
     const document = await Promise.all(
       latest.map(async (item) => {
         if (!item._max.serialNumber) return null;
@@ -87,9 +104,9 @@ export const getStatistics = async (year) => {
           },
           orderBy: { createdAt: "desc" },
         });
-
+        console.log(latestDoc)
         return {
-          id: item.id,
+          id: latestDoc?.id || null, // ✅ ดึง id ของ document ล่าสุด
           documentType: item.documentType,
           latestSerial: item._max.serialNumber,
           fullNumber: latestDoc?.fullNumber || null,
