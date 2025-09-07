@@ -1,5 +1,9 @@
 import prisma from "../config/prisma_config.js";
-import { createDocumentInDB, findDocuments } from "../service/documentService.js";
+import {
+  createDocumentInDB,
+  findDocuments,
+  getStatistics,
+} from "../service/documentService.js";
 
 export const createDocument = async (req, res, next) => {
   try {
@@ -8,7 +12,7 @@ export const createDocument = async (req, res, next) => {
       OUTLETTER: 147,
       ORDER: 100,
       NOTE: 50,
-      CERTIFICATE: 1
+      CERTIFICATE: 1,
     };
 
     const newLetter = await createDocumentInDB({ ...req.body, startSerialMap });
@@ -17,8 +21,6 @@ export const createDocument = async (req, res, next) => {
     next(error);
   }
 };
-
-
 
 export const listDocuments = async (req, res, next) => {
   try {
@@ -44,17 +46,42 @@ export const searchDocuments = async (req, res, next) => {
 
     if (!fullNumber && !year && !documentType && !title) {
       return res.status(400).json({
-        error: "กรุณาส่ง fullNumber หรือ year หรือ documentType หรือ title อย่างน้อย 1 ตัว",
+        error:
+          "กรุณาส่ง fullNumber หรือ year หรือ documentType หรือ title อย่างน้อย 1 ตัว",
       });
     }
 
-    const letters = await findDocuments({ fullNumber, year, documentType, title });
+    const letters = await findDocuments({
+      fullNumber,
+      year,
+      documentType,
+      title,
+    });
 
     if (letters.length === 0) {
       return res.status(404).json({ message: "ไม่พบข้อมูลตามเงื่อนไข" });
     }
 
     res.json(letters);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getLatestDocument = async (req, res, next) => {
+  try {
+    const { year } = req.params;
+    console.log(year)
+    if (!year) {
+      return res.status(400).json({ message: "Year is Request!!!" });
+    }
+    console.log(year);
+    const latestSerialNumber = await getStatistics(year);
+    console.log(latestSerialNumber)
+    if (latestSerialNumber.length === 0) {
+      return res.status(404).json({ message: "ไม่พบข้อมูลตามปีที่กำหนด" });
+    }
+    res.json(latestSerialNumber);
   } catch (error) {
     next(error);
   }

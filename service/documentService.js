@@ -62,3 +62,60 @@ export const createDocumentInDB = async ({ documentType, title, issuedBy, recipi
   return newLetter;
 };
 
+
+// ✅ ฟังก์ชันดึงเลขล่าสุดของเอกสารแต่ละประเภท
+export const getStatistics = async (year) => {
+  try {
+    const intYear = parseInt(year, 10);
+
+    // -------------------- OfficialLetter --------------------
+    const latest = await prisma.officialLetter.groupBy({
+      by: ["documentType"],
+      where: intYear ? { year: intYear } : undefined,
+      _max: { serialNumber: true },
+    });
+
+    const document = await Promise.all(
+      latest.map(async (item) => {
+        if (!item._max.serialNumber) return null;
+
+        const latestDoc = await prisma.officialLetter.findFirst({
+          where: {
+            documentType: item.documentType,
+            year: intYear ? intYear : undefined,
+            serialNumber: item._max.serialNumber,
+          },
+          orderBy: { createdAt: "desc" },
+        });
+
+        return {
+          documentType: item.documentType,
+          latestSerial: item._max.serialNumber,
+          fullNumber: latestDoc?.fullNumber || null,
+          title: latestDoc?.title || null,
+          createdAt: latestDoc?.createdAt || null,
+        };
+      })
+    );
+
+    // -------------------- Student --------------------
+    const total = await prisma.student.count();
+    const male = await prisma.student.count({ where: { gender: "ช" } });
+    const female = await prisma.student.count({ where: { gender: "ญ" } });
+
+    const student = {
+      total,
+      male,
+      female,
+    };
+
+    // -------------------- รวมผลลัพธ์ --------------------
+    return {
+      document: document.filter(Boolean),
+      student,
+    };
+  } catch (error) {
+    console.error("❌ Error fetching statistics:", error);
+    throw new Error("ไม่สามารถดึงข้อมูลสถิติได้");
+  }
+};
