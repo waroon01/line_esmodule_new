@@ -42,7 +42,7 @@ export const createDocumentInDB = async ({ documentType, title, issuedBy, recipi
   // สร้าง fullNumber
   const fullNumber = documentType === "OUTLETTER"
     ? `ศธ.04156/${serialStr}`
-    : `ที่ ${documentType}/${serialStr}`;
+    : `ที่ ${serialStr}`;
 
   // บันทึกลง DB
   const newLetter = await prisma.officialLetter.create({
