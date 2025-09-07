@@ -89,6 +89,7 @@ export const getStatistics = async (year) => {
         });
 
         return {
+          id: item.id,
           documentType: item.documentType,
           latestSerial: item._max.serialNumber,
           fullNumber: latestDoc?.fullNumber || null,
