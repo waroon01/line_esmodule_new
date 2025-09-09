@@ -63,7 +63,7 @@ route.put("/update/:id", async (req, res, next) => {
   }
 });
 
-route.delete("/remove/:id", async (req, res) => {
+route.delete("/remove/:id", async (req, res, next) => {
   try {
     const { id } = req.params 
     if(!id){

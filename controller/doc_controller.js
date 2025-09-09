@@ -86,3 +86,24 @@ export const getLatestDocument = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const updateOfficialLetter = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+
+    const updated = await prisma.officialLetter.update({
+      where: { id: parseInt(id) },
+      data
+    });
+
+    res.json({
+      message: "OfficialLetter updated successfully",
+      letter: updated
+    });
+  } catch (error) {
+    console.error("Error updating OfficialLetter:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
