@@ -9,7 +9,7 @@ router.get('/letter', listDocuments);
 router.post('/letter', validate(documentsSchema),createDocument);
 router.post('/letter/search', authCheck, adminCheck, searchDocuments);
 router.get('/latestdoc/:year', getLatestDocument)
-router.put('/letter/:id',updateOfficialLetter)
+router.put('/letter/update/:id', updateOfficialLetter)
 
 
 

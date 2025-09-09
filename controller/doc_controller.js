@@ -90,20 +90,40 @@ export const getLatestDocument = async (req, res, next) => {
 
 export const updateOfficialLetter = async (req, res) => {
   try {
-    const { id } = req.params;
-    const data = req.body;
+    const { id } = req.params; // id จาก URL
+    const data = req.body;     // ข้อมูลจาก client ที่ส่งมา
 
-    const updated = await prisma.officialLetter.update({
-      where: { id: parseInt(id) },
-      data
+    // ตรวจสอบว่ามี record อยู่จริงก่อน
+    const existingLetter = await prisma.officialLetter.findUnique({
+      where: { id: Number(id) },
     });
 
-    res.json({
-      message: "OfficialLetter updated successfully",
-      letter: updated
+    if (!existingLetter) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+
+    // update document
+    const updated = await prisma.officialLetter.update({
+      where: { id: Number(id) },
+      data: {
+        documentType: data.documentType,
+        year: data.year,
+        serialNumber: data.serialNumber,
+        fullNumber: data.fullNumber,
+        title: data.title,
+        issuedBy: data.issuedBy,
+        recipient: data.recipient,
+        note: data.note,
+        priority: data.priority,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Document updated successfully",
+      data: updated,
     });
   } catch (error) {
-    console.error("Error updating OfficialLetter:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Update error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
