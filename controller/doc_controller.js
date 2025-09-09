@@ -71,13 +71,13 @@ export const searchDocuments = async (req, res, next) => {
 export const getLatestDocument = async (req, res, next) => {
   try {
     const { year } = req.params;
-    console.log(year)
+    console.log(year);
     if (!year) {
       return res.status(400).json({ message: "Year is Request!!!" });
     }
     console.log(year);
     const latestSerialNumber = await getStatistics(year);
-    console.log(latestSerialNumber)
+    console.log(latestSerialNumber);
     if (latestSerialNumber.length === 0) {
       return res.status(404).json({ message: "ไม่พบข้อมูลตามปีที่กำหนด" });
     }
@@ -87,11 +87,10 @@ export const getLatestDocument = async (req, res, next) => {
   }
 };
 
-
 export const updateOfficialLetter = async (req, res) => {
   try {
     const { id } = req.params; // id จาก URL
-    const data = req.body;     // ข้อมูลจาก client ที่ส่งมา
+    const data = req.body; // ข้อมูลจาก client ที่ส่งมา
 
     // ตรวจสอบว่ามี record อยู่จริงก่อน
     const existingLetter = await prisma.officialLetter.findUnique({
@@ -124,6 +123,32 @@ export const updateOfficialLetter = async (req, res) => {
     });
   } catch (error) {
     console.error("Update error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const removeOfficialLetter = async (req, res) => {
+  try {
+    const { id } = req.params; // id จาก URL
+
+    // ตรวจสอบว่ามี record อยู่จริงก่อน
+    const existingLetter = await prisma.officialLetter.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!existingLetter) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+
+    const removeLetter = await prisma.officialLetter.delete({
+      where: { id: Number(id) },
+    });
+
+    return res.status(200).json({
+      message: "Document Remove successfully",
+    })
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
