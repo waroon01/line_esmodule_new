@@ -143,6 +143,7 @@ export const removeOfficialLetter = async (req, res) => {
     const removeLetter = await prisma.officialLetter.delete({
       where: { id: Number(id) },
     });
+    console.log(removeLetter)
 
     return res.status(200).json({
       message: "Document Remove successfully",

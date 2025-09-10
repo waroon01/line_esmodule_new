@@ -104,9 +104,9 @@ export const getStatistics = async (year) => {
           },
           orderBy: { createdAt: "desc" },
         });
-        console.log(latestDoc)
+
         return {
-          id: latestDoc?.id || null, // ✅ ดึง id ของ document ล่าสุด
+          id: latestDoc?.id || null, // ✅ id ของ document ล่าสุด
           documentType: item.documentType,
           latestSerial: item._max.serialNumber,
           fullNumber: latestDoc?.fullNumber || null,
@@ -120,11 +120,13 @@ export const getStatistics = async (year) => {
     const total = await prisma.student.count();
     const male = await prisma.student.count({ where: { gender: "ช" } });
     const female = await prisma.student.count({ where: { gender: "ญ" } });
+    const studying = await prisma.student.count({ where: { status: "กำลังศึกษา" } }); // ✅ เพิ่มตรงนี้
 
     const student = {
       total,
       male,
       female,
+      studying, // ✅ ส่งออกไปด้วย
     };
 
     // -------------------- รวมผลลัพธ์ --------------------
