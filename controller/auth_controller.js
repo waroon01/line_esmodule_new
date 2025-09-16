@@ -23,7 +23,7 @@ export const register = async (req, res, next) => {
 
     // 2.check Email in DB
     if (user) {
-      createError(400, "Email aleady exist!!!");
+      return createError(400, "Email aleady exist!!!");
     }
     // 3.Encrypt Password ->bcryptJS
     const hashPassword = bcrypt.hashSync(password, 10);
@@ -62,13 +62,13 @@ export const login = async (req, res, next) => {
       },
     });
     if (!user) {
-      createError(400, "Email or Password is invalid!!");
+      return createError(400, "Email or Password is invalid!!");
     }
 
     //3. check password
     const checkPassword = bcrypt.compareSync(password, user.password);
     if (!checkPassword) {
-      createError(400, "password wrong");
+      return createError(400, "password wrong");
     }
 
     //4. generate token
@@ -79,7 +79,9 @@ export const login = async (req, res, next) => {
       role: user.role,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
     console.log(token);
     res.json({ message: "Login your Success", payload: payload, token: token });
@@ -88,45 +90,45 @@ export const login = async (req, res, next) => {
   }
 };
 
-export const currentUser = async(req,res)=>{
+export const currentUser = async (req, res) => {
   try {
-    console.log("test")
+    console.log("test");
     const user = await prisma.user.findFirst({
       where: {
-        email: req.user.email
+        email: req.user.email,
       },
       select: {
         id: true,
         email: true,
         name: true,
-        role: true
-      }
-    })
-    res.json({user})
+        role: true,
+      },
+    });
+    res.json({ user });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
-export const currentAdmin = async(req,res)=>{
+export const currentAdmin = async (req, res) => {
   try {
-    console.log("test")
+    console.log("test");
     const user = await prisma.user.findFirst({
       where: {
-        email: req.user.email
+        email: req.user.email,
       },
       select: {
         id: true,
         email: true,
         name: true,
-        role: true
-      }
-    })
-    res.json({user}).status(200)
+        role: true,
+      },
+    });
+    res.json({ user }).status(200);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 export const getListUser = async (req, res) => {
   try {
@@ -138,7 +140,6 @@ export const getListUser = async (req, res) => {
 
     // ถ้าไม่พบ user
     return res.status(404).json({ message: "No users found" });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
