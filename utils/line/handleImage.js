@@ -73,6 +73,7 @@ import axios from "axios";
 import { replyMessageLine } from "./replyMessage.js";
 
 async function handleImage(event) {
+  console.log("start")
 
     // --- ตอบกลับ user เป็น quick reply ---
   await replyMessageLine(event.replyToken, {
