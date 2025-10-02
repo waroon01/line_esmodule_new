@@ -231,7 +231,7 @@ export const handleMessage = async (event) => {
       break;
     case "image":
       // await startLineLoading(event.source.userId, 10);
-      handleImage(event);
+      await handleImage(event);
       break;
   }
 };
