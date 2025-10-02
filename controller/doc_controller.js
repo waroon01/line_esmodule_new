@@ -4,15 +4,16 @@ import {
   findDocuments,
   getStatistics,
 } from "../service/documentService.js";
+import createError from "../utils/auth/createError.js";
 
 export const createDocument = async (req, res, next) => {
   try {
     // กำหนดค่าเริ่มต้นของแต่ละประเภท
     const startSerialMap = {
       OUTLETTER: 147,
-      ORDER: 100,
-      NOTE: 50,
-      CERTIFICATE: 1,
+      ORDER: 33,
+      NOTE: 0,
+      CERTIFICATE: 3,
     };
 
     const newLetter = await createDocumentInDB({ ...req.body, startSerialMap });
@@ -45,10 +46,10 @@ export const searchDocuments = async (req, res, next) => {
     const { fullNumber, year, documentType, title } = req.body;
 
     if (!fullNumber && !year && !documentType && !title) {
-      return res.status(400).json({
-        error:
-          "กรุณาส่ง fullNumber หรือ year หรือ documentType หรือ title อย่างน้อย 1 ตัว",
-      });
+      createError(
+        400,
+        "กรุณาส่ง fullNumber หรือ year หรือ documentType หรือ title อย่างน้อย 1 ตัว"
+      );
     }
 
     const letters = await findDocuments({
@@ -59,7 +60,7 @@ export const searchDocuments = async (req, res, next) => {
     });
 
     if (letters.length === 0) {
-      return res.status(404).json({ message: "ไม่พบข้อมูลตามเงื่อนไข" });
+      return createError(404, "ไม่พบข้อมูลตรงตามเงื่อนไข");
     }
 
     res.json(letters);
@@ -79,7 +80,7 @@ export const getLatestDocument = async (req, res, next) => {
     const latestSerialNumber = await getStatistics(year);
     console.log(latestSerialNumber);
     if (latestSerialNumber.length === 0) {
-      return res.status(404).json({ message: "ไม่พบข้อมูลตามปีที่กำหนด" });
+      return createError(404, "ไม่พบข้อมูลตามปีที่กำหนด");
     }
     res.json(latestSerialNumber);
   } catch (error) {
@@ -98,7 +99,7 @@ export const updateOfficialLetter = async (req, res) => {
     });
 
     if (!existingLetter) {
-      return res.status(404).json({ message: "Document not found" });
+      return createError(404, "Document not found");
     }
 
     // update document
@@ -122,8 +123,7 @@ export const updateOfficialLetter = async (req, res) => {
       data: updated,
     });
   } catch (error) {
-    console.error("Update error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
@@ -137,19 +137,18 @@ export const removeOfficialLetter = async (req, res) => {
     });
 
     if (!existingLetter) {
-      return res.status(404).json({ message: "Document not found" });
+      return createError(404, "Document not found")  
     }
 
     const removeLetter = await prisma.officialLetter.delete({
       where: { id: Number(id) },
     });
-    console.log(removeLetter)
+    console.log(removeLetter);
 
     return res.status(200).json({
       message: "Document Remove successfully",
-    })
+    });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
