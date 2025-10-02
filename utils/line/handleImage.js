@@ -73,6 +73,33 @@ import axios from "axios";
 import { replyMessageLine } from "./replyMessage.js";
 
 async function handleImage(event) {
+
+    // --- ตอบกลับ user เป็น quick reply ---
+  await replyMessageLine(event.replyToken, {
+    type: "text",
+    text: "คุณต้องการอัพโหลดภาพนี้หรือไม่?",
+    quickReply: {
+      items: [
+        {
+          type: "action",
+          action: {
+            type: "message",
+            label: "✅ ใช่",
+            text: "upload_yes",
+          },
+        },
+        {
+          type: "action",
+          action: {
+            type: "message",
+            label: "❌ ไม่ใช่",
+            text: "upload_no",
+          },
+        },
+      ],
+    },
+  });
+
   const messageId = event.message.id;
 
   // --- ดึง content โดยตรงจาก LINE API ---
@@ -111,31 +138,7 @@ async function handleImage(event) {
 
   // console.log("Saved to temp:", res.data);
 
-  // --- ตอบกลับ user เป็น quick reply ---
-  await replyMessageLine(event.replyToken, {
-    type: "text",
-    text: "คุณต้องการอัพโหลดภาพนี้หรือไม่?",
-    quickReply: {
-      items: [
-        {
-          type: "action",
-          action: {
-            type: "message",
-            label: "✅ ใช่",
-            text: "upload_yes",
-          },
-        },
-        {
-          type: "action",
-          action: {
-            type: "message",
-            label: "❌ ไม่ใช่",
-            text: "upload_no",
-          },
-        },
-      ],
-    },
-  });
+
 }
 
 export default handleImage;
