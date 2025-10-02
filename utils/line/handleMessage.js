@@ -230,11 +230,7 @@ export const handleMessage = async (event) => {
       console.log("sticker");
       break;
     case "image":
-<<<<<<< HEAD
       // await startLineLoading(event.source.userId, 10);
-=======
-      await startLineLoading(event.source.userId, 10);
->>>>>>> 266130b452f1496b4a6ce6a79551a48c5cfab811
       handleImage(event);
       break;
   }
