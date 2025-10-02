@@ -55,7 +55,7 @@ export const handleMessage = async (event) => {
         await startLineLoading(event.source.userId, 5);
         await replyMessageLine(event.replyToken, {
           type: "text",
-          text: "สวัสดีนะครับคุณท่านครับ",
+          text: "สวัสดีนะครับคุณท่านจ้า!!!",
         });
         return;
       }
