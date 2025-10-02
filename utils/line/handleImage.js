@@ -109,7 +109,7 @@ async function handleImage(event) {
     // { headers: formData.getHeaders?.() } // ป้องกัน axios formdata error
   );
 
-  console.log("Saved to temp:", res.data);
+  // console.log("Saved to temp:", res.data);
 
   // --- ตอบกลับ user เป็น quick reply ---
   await replyMessageLine(event.replyToken, {
