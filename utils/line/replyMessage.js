@@ -11,3 +11,15 @@ export const replyMessageLine = async (replyToken, message) => {
     throw err; // ให้เด้งไป catch ของฟังก์ชันที่เรียกใช้
   }
 };
+
+export const pushMessageLine = async (userId, message) => {
+  try {
+    return await lineclient.pushMessage({
+      to: userId,
+      messages: [message]
+    });
+  } catch (err) {
+    console.error("LINE push error:", err.response?.data || err);
+    throw err;
+  }
+};

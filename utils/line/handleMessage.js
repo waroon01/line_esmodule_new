@@ -2,7 +2,7 @@ import {
   findDocuments,
   createDocumentInDB,
 } from "../../service/documentService.js";
-import { replyMessageLine } from "./replyMessage.js";
+import { pushMessageLine, replyMessageLine } from "./replyMessage.js";
 import startLineLoading from "./lineLoading.js";
 import { findStudents } from "../../service/studentService.js";
 import axios from "axios";
@@ -54,6 +54,15 @@ export const handleMessage = async (event) => {
       if (text === "สวัสดี") {
         await startLineLoading(event.source.userId, 5);
         await replyMessageLine(event.replyToken, {
+          type: "text",
+          text: "สวัสดีนะครับคุณท่านจ้า!!!",
+        });
+        return;
+      }
+
+      if (text === "ทักทาย") {
+        await startLineLoading(event.source.userId, 5);
+        await pushMessageLine(event.source.userId, {
           type: "text",
           text: "สวัสดีนะครับคุณท่านจ้า!!!",
         });
