@@ -10,10 +10,10 @@ export const createDocument = async (req, res, next) => {
   try {
     // กำหนดค่าเริ่มต้นของแต่ละประเภท
     const startSerialMap = {
-      OUTLETTER: 147,
-      ORDER: 33,
+      OUTLETTER: 0,
+      ORDER: 0,
       NOTE: 0,
-      CERTIFICATE: 3,
+      CERTIFICATE: 0,
     };
 
     const newLetter = await createDocumentInDB({ ...req.body, startSerialMap });
